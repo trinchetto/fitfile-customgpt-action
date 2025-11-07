@@ -28,7 +28,7 @@ jobs:
         run: uv sync --dev
 
       - name: Pre-commit (ruff + mypy)
-        run: uv run pre-commit run --all-files ruff ruff-format mypy
+        run: uv run pre-commit run --all-files
 
       - name: Unit tests
         run: uv run pytest
