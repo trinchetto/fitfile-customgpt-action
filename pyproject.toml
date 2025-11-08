@@ -3,7 +3,7 @@ name = "fitfile-customgpt-action"
 version = "0.1.0"
 description = "Expose FIT file parsing and generation helpers through a FastAPI service for CustomGPT."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "fastapi>=0.121.0",
     "fit-tool>=0.9.13",
@@ -37,7 +37,7 @@ testpaths = ["tests"]
 addopts = "-ra"
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 strict = true
 disallow_any_unimported = false
 warn_return_any = true
@@ -45,6 +45,7 @@ warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true
 exclude = ["tests"]
+mypy_path = ["src"]
 
 [[tool.mypy.overrides]]
 module = "fit_tool.*"
