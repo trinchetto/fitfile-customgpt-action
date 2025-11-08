@@ -2,25 +2,23 @@
 
 A CustomGPT Action that parses and produces FIT files (see: https://developer.garmin.com/fit/overview/)
 
-This repository uses [`uv`](https://github.com/astral-sh/uv) for dependency management and isolates the
-Python package inside the `fitfile_customgpt_action/` directory. The package exposes a FastAPI service
-that acts as a tool endpoint for CustomGPT workflows: it can parse FIT binaries into JSON-friendly
-structures and build FIT binaries from lists of FIT profile messages through `fit-tool`.
+This repository uses [`uv`](https://github.com/astral-sh/uv) for dependency management. The FastAPI
+service acts as a CustomGPT tool endpoint that can parse FIT binaries into JSON-friendly structures
+and build FIT binaries from lists of FIT profile messages through `fit-tool`.
 
 ## Project layout
 
 ```
-fitfile_customgpt_action/
-├── pyproject.toml      # uv-managed project metadata & tooling config
-├── uv.lock             # locked dependency graph
-├── src/fitfile_customgpt_action/
+pyproject.toml
+uv.lock
+src/fitfile_customgpt_action/
 │   ├── app.py          # FastAPI factory and ASGI app instance
 │   ├── cli.py          # uvicorn entry-point for local execution
 │   ├── models.py       # Pydantic models shared by the API
 │   ├── routes.py       # REST endpoints
 │   ├── services.py     # FIT parsing/building helpers that wrap fit-tool
 │   └── message_registry.py  # Discovers fit-tool profile messages at runtime
-└── tests/              # Pytest scaffolding (fixtures only for now)
+tests/                  # Pytest suite (unit tests + fixtures)
 ```
 
 ## Getting started
@@ -28,7 +26,6 @@ fitfile_customgpt_action/
 1. Make sure `uv` is available in your shell (e.g. `pipx install uv`).
 2. Install the project with development dependencies:
    ```bash
-   cd fitfile_customgpt_action
    uv sync --dev
    ```
 3. Run the ASGI server:
@@ -73,9 +70,10 @@ message supported by the Garmin FIT profile.
 
 ## Tooling
 
-- **Linting / formatting**: `uv run pre-commit run --all-files ruff ruff-format`
+- **Linting**: `uv run pre-commit run --all-files ruff`
+- **Formatting**: `uv run pre-commit run --all-files ruff-format`
 - **Static typing**: `uv run pre-commit run --all-files mypy`
-- **Testing scaffold**: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest` (skipped placeholder test only)
+- **Testing**: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest`
 - **Hooks**: configure with `pre-commit install` to run Ruff + mypy before each commit
 
 ## Continuous Integration
@@ -83,7 +81,9 @@ message supported by the Garmin FIT profile.
 `.github/workflows/ci.yml` runs on pushes/PRs and executes the full toolchain:
 
 1. `uv sync --dev`
-2. `pre-commit run --all-files ruff ruff-format mypy`
-3. `pytest`
+2. `pre-commit run --all-files ruff`
+3. `pre-commit run --all-files ruff-format`
+4. `pre-commit run --all-files mypy`
+5. `pytest`
 
 This ensures consistent quality gates locally and in CI/CD.

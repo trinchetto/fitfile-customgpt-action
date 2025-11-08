@@ -138,7 +138,11 @@ celerybeat.pid
 .env
 .envrc
 .venv
+.lock
+db.db
 .uv-cache/
+.pre-commit-cache/
+**/.pre-commit-cache/
 env/
 venv/
 ENV/
