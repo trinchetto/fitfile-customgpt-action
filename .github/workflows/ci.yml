@@ -39,3 +39,74 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t fitfile-customgpt-action .
+
+      - name: Archive Docker image
+        run: docker save fitfile-customgpt-action | gzip > docker-image.tar.gz
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fitfile-docker-image
+          path: docker-image.tar.gz
+
+  docker-client-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+          python-version: "3.14"
+
+      - name: Sync dependencies
+        run: uv sync --dev
+
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: fitfile-docker-image
+
+      - name: Load Docker image
+        run: gunzip -c docker-image.tar.gz | docker load
+
+      - name: Start FIT service container
+        run: docker run -d --rm --name fitfile-service -p 8080:8080 fitfile-customgpt-action
+
+      - name: Wait for service readiness
+        run: |
+          for _ in {1..30}; do
+            if curl -fsS http://127.0.0.1:8080/fit/healthz > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Service failed to become ready" >&2
+          docker logs fitfile-service || true
+          exit 1
+
+      - name: Exercise client CLI
+        run: |
+          uv run fitfile-customgpt-client --base-url http://127.0.0.1:8080 parse sample_data/sample.FIT
+          cat <<'JSON' >/tmp/payload.json
+          {
+            "messages": [
+              {
+                "name": "file_id",
+                "fields": [
+                  {"name": "type", "value": 4},
+                  {"name": "manufacturer", "value": 1}
+                ]
+              }
+            ]
+          }
+          JSON
+          uv run fitfile-customgpt-client --base-url http://127.0.0.1:8080 produce /tmp/payload.json --output /tmp/generated.fit
+          ls -l /tmp/generated.fit
+
+      - name: Stop FIT service container
+        if: always()
+        run: docker stop fitfile-service
