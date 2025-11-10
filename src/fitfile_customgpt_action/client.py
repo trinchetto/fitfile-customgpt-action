@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any, Sequence, cast
 
@@ -32,8 +33,12 @@ def produce_fit(base_url: str, payload_path: Path, output_path: Path) -> Path:
     return output_path
 
 
+_DUPLICATE_FIT_SEGMENT = re.compile(r"(?<!:)//fit")
+
+
 def _normalize(url: str) -> str:
-    return url.replace("//fit", "/fit")
+    """Collapse duplicate path separators immediately before /fit."""
+    return _DUPLICATE_FIT_SEGMENT.sub("/fit", url)
 
 
 def main(argv: Sequence[str] | None = None) -> None:
