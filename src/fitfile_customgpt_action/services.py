@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from io import BytesIO
 import logging
 import math
+from io import BytesIO
+from typing import cast
 
 from fastapi import HTTPException
 from fit_tool.data_message import DataMessage
@@ -21,10 +22,12 @@ from .models import (
     DefinitionField,
     DefinitionRecord,
     FitMetadata,
+    JSONScalar,
+    JSONValue,
     MessageFieldPayload,
     MessagePayload,
     ParseFitResponse,
-) 
+)
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +106,7 @@ def _serialize_record(record: Record) -> DefinitionRecord | DataRecord:
 
 
 def _serialize_data_field(field: Field) -> DataField:
-    values: list[object] = []
+    values: list[JSONScalar] = []
     dropped_non_finite = False
     for value in field.get_values():
         if value is None:
@@ -111,10 +114,10 @@ def _serialize_data_field(field: Field) -> DataField:
         if isinstance(value, float) and not math.isfinite(value):
             dropped_non_finite = True
             continue
-        values.append(value)
+        values.append(cast(JSONScalar, value))
 
     if not values:
-        data_value = None
+        data_value: JSONValue | None = None
     elif len(values) == 1:
         data_value = values[0]
     else:
