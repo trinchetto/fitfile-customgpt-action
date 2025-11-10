@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Privacy Policy — AI Coach Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Internal use: prevent indexing -->
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    :root { --w: 820px; --fg: #0f172a; --muted: #475569; --bg: #ffffff; --border:#e2e8f0; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+    main { max-width:var(--w); margin:40px auto; padding:0 20px 60px; }
+    h1 { font-size:1.9rem; margin:0 0 0.5rem; }
+    h2 { font-size:1.25rem; margin:2rem 0 0.5rem; }
+    p, li { color:var(--fg); }
+    .meta { color:var(--muted); margin-bottom:1.5rem; }
+    .card { border:1px solid var(--border); border-radius:14px; padding:22px; margin:18px 0; }
+    code { background:#f8fafc; border:1px solid var(--border); padding:2px 6px; border-radius:6px; }
+    a { color:#0ea5e9; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    footer { margin-top:40px; color:var(--muted); font-size:0.95rem; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Privacy Policy for AI Coach Assistant</h1>
+  <div class="meta">Last updated: 10 November 2025</div>
+
+  <div class="card">
+    <h2>1. Overview</h2>
+    <p><strong>AI Coach Assistant</strong> is a CustomGPT used internally to generate and manage structured training files. It includes an Action hosted on <strong>Google Cloud Run</strong> that parses and produces <code>.zwo</code> and <code>.fit</code> workout files.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Data Collection and Usage</h2>
+    <p>The system processes user prompts and file data solely to generate or interpret workout files. Inputs are sent to the Cloud Run backend only when necessary to execute these actions. No personal, identifying, or behavioral data is collected for analytics or marketing.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. Data Storage</h2>
+    <ul>
+      <li>The Action <strong>does not</strong> store or retain user data.</li>
+      <li>Inputs/outputs are processed transiently in memory and discarded after the response.</li>
+      <li>Google Cloud may keep minimal, temporary infrastructure logs (e.g., timestamps) for reliability; these logs contain no user content or personal data.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>4. Data Sharing</h2>
+    <p>No user data is shared with third parties. Data flows only between OpenAI’s platform and the Cloud Run endpoint to fulfill requests.</p>
+  </div>
+
+  <div class="card">
+    <h2>5. Intended Use</h2>
+    <p>This GPT is for <strong>internal use</strong> only, not for public distribution or commercial deployment.</p>
+  </div>
+
+  <div class="card">
+    <h2>6. Security Measures</h2>
+    <p>All backend communication occurs over HTTPS to authenticated endpoints. No credentials or tokens are exposed in client-side requests.</p>
+  </div>
+
+  <div class="card">
+    <h2>7. Contact</h2>
+    <p><strong>Marco</strong> — contact via GitHub issues.</p>
+  </div>
+
+  <footer>
+    <p>For EU users or future public release, add: “We comply with applicable data protection laws, including GDPR. Users may request information or deletion by contacting us.”</p>
+  </footer>
+</main>
+</body>
+</html>
