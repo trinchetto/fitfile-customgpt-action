@@ -32,7 +32,12 @@ tests/                  # Pytest suite (unit tests + fixtures)
    ```bash
    uv run fitfile-customgpt-action --host 127.0.0.1 --port 8000
    ```
-4. Explore the OpenAPI docs at `http://127.0.0.1:8000/fit/docs`.
+ 4. (Optional) Use the bundled client to interact with the API:
+   ```bash
+   uv run fitfile-customgpt-client parse path/to/file.fit
+   uv run fitfile-customgpt-client produce payload.json --output my.fit
+   ```
+5. Explore the OpenAPI docs at `http://127.0.0.1:8000/fit/docs`.
 
 ## API surface
 
@@ -75,6 +80,27 @@ message supported by the Garmin FIT profile.
 - **Static typing**: `uv run pre-commit run --all-files mypy`
 - **Testing**: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run pytest`
 - **Hooks**: configure with `pre-commit install` to run Ruff + mypy before each commit
+
+## Simple client
+
+`fitfile-customgpt-client` offers two commands that talk to the running server:
+
+- `parse <path>` uploads a FIT file and prints the parsed JSON.
+- `produce <payload.json> [--output OUTPUT]` posts a JSON payload describing FIT messages and writes the resulting FIT binary.
+
+Both commands accept `--base-url` (default `http://127.0.0.1:8000`).
+
+## Sample data
+
+A sample Garmin FIT file is available at `sample_data/sample.FIT`.
+Use it to exercise the parse endpoint quickly:
+
+```bash
+uv run fitfile-customgpt-client --base-url http://127.0.0.1:8080 parse \
+  sample_data/sample.FIT
+```
+
+You can also mount the repository into Docker and run the same command to validate the containerized service.
 
 ## Continuous Integration
 

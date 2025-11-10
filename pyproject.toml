@@ -7,12 +7,14 @@ requires-python = ">=3.14"
 dependencies = [
     "fastapi>=0.121.0",
     "fit-tool>=0.9.13",
+    "httpx>=0.28.1",
     "python-multipart>=0.0.20",
     "uvicorn>=0.38.0",
 ]
 
 [project.scripts]
 fitfile-customgpt-action = "fitfile_customgpt_action.cli:main"
+fitfile-customgpt-client = "fitfile_customgpt_action.client:main"
 
 [build-system]
 requires = ["uv_build>=0.9.7,<0.10.0"]
@@ -20,7 +22,6 @@ build-backend = "uv_build"
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -53,7 +54,6 @@ ignore_missing_imports = true
 
 [dependency-groups]
 dev = [
-    "httpx>=0.28.1",
     "mypy>=1.18.2",
     "pre-commit>=4.3.0",
     "pytest>=8.4.2",
