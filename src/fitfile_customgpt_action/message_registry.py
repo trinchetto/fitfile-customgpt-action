@@ -1,3 +1,5 @@
+"""Discover and cache FIT `DataMessage` subclasses exposed by `fit_tool`."""
+
 from __future__ import annotations
 
 import importlib
@@ -11,6 +13,7 @@ PACKAGE_NAME = "fit_tool.profile.messages"
 
 
 def _is_message_class(candidate: type, module_name: str) -> bool:
+    """Return True when `candidate` is a concrete message defined in `module_name`."""
     if candidate is DataMessage:
         return False
 
@@ -30,6 +33,7 @@ def _is_message_class(candidate: type, module_name: str) -> bool:
 
 
 def _build_registry() -> dict[str, type[DataMessage]]:
+    """Scan the fit_tool profile package and collect every named DataMessage subclass."""
     package = importlib.import_module(PACKAGE_NAME)
     registry: dict[str, type[DataMessage]] = {}
 
@@ -50,10 +54,12 @@ def _build_registry() -> dict[str, type[DataMessage]]:
 
 @lru_cache(maxsize=1)
 def _registry() -> dict[str, type[DataMessage]]:
+    """Memoized accessor for the discovered message registry."""
     return _build_registry()
 
 
 def resolve(message_name: str) -> type[DataMessage]:
+    """Look up a DataMessage subclass by name, raising KeyError when unknown."""
     normalized = message_name.strip().lower()
     mapping = _registry()
     if normalized not in mapping:

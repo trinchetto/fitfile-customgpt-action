@@ -6,6 +6,7 @@ from .routes import router
 
 
 def create_app() -> FastAPI:
+    """Build and configure the FastAPI application."""
     app = FastAPI(
         title="FIT File CustomGPT Action",
         version="0.1.0",

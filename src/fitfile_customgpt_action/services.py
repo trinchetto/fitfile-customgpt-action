@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 def parse_fit_bytes(payload: bytes) -> ParseFitResponse:
+    """Decode FIT bytes into metadata + records suitable for API responses."""
     try:
         fit_file = FitFile.from_bytes(payload)
     except Exception as exc:  # pragma: no cover - fast failure path
@@ -50,6 +51,7 @@ def parse_fit_bytes(payload: bytes) -> ParseFitResponse:
 
 
 def build_fit_file(request: BuildFitRequest) -> BytesIO:
+    """Construct a FIT file from incoming request payloads."""
     if not request.messages:
         raise HTTPException(
             status_code=400,
@@ -69,6 +71,7 @@ def build_fit_file(request: BuildFitRequest) -> BytesIO:
 
 
 def _serialize_record(record: Record) -> DefinitionRecord | DataRecord:
+    """Convert a fit_tool Record into either DefinitionRecord or DataRecord."""
     if record.is_definition:
         definition = record.message
         if not isinstance(definition, DefinitionMessage):  # pragma: no cover - defensive
@@ -106,6 +109,7 @@ def _serialize_record(record: Record) -> DefinitionRecord | DataRecord:
 
 
 def _serialize_data_field(field: Field) -> DataField:
+    """Adapt a fit_tool Field into a JSON-friendly DataField."""
     values: list[JSONScalar] = []
     dropped_non_finite = False
     for value in field.get_values():
@@ -141,6 +145,7 @@ def _serialize_data_field(field: Field) -> DataField:
 
 
 def _message_from_payload(payload: MessagePayload) -> DataMessage:
+    """Instantiate a DataMessage from a user-supplied payload."""
     try:
         message_cls = resolve_message(payload.name)
     except KeyError as exc:
@@ -159,6 +164,7 @@ def _message_from_payload(payload: MessagePayload) -> DataMessage:
 
 
 def _apply_field_payload(message: DataMessage, field_payload: MessageFieldPayload) -> None:
+    """Populate a DataMessage field with values defined in the payload."""
     field = message.get_field_by_name(field_payload.name)
     if field is None:
         raise HTTPException(

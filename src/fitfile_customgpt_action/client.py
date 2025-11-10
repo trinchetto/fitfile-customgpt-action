@@ -13,6 +13,7 @@ DEFAULT_OUTPUT = Path("generated.fit")
 
 
 def parse_fit(base_url: str, fit_path: Path) -> dict[str, Any]:
+    """Upload a FIT file to the parse endpoint and return the parsed JSON."""
     url = _normalize(f"{base_url}/fit/parse")
     with fit_path.open("rb") as handle:
         response = httpx.post(
@@ -25,6 +26,7 @@ def parse_fit(base_url: str, fit_path: Path) -> dict[str, Any]:
 
 
 def produce_fit(base_url: str, payload_path: Path, output_path: Path) -> Path:
+    """Post a JSON payload to the produce endpoint and write the returned FIT bytes."""
     url = _normalize(f"{base_url}/fit/produce")
     payload = json.loads(payload_path.read_text())
     response = httpx.post(url, json=payload, timeout=30.0)
@@ -42,6 +44,7 @@ def _normalize(url: str) -> str:
 
 
 def main(argv: Sequence[str] | None = None) -> None:
+    """CLI entry point for the simple FIT client."""
     parser = argparse.ArgumentParser(description="Simple client for the FIT CustomGPT Action.")
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL, help="Service base URL.")
     subparsers = parser.add_subparsers(dest="command", required=True)
