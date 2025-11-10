@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from io import BytesIO
+import logging
+import math
 
 from fastapi import HTTPException
 from fit_tool.data_message import DataMessage
@@ -22,7 +24,9 @@ from .models import (
     MessageFieldPayload,
     MessagePayload,
     ParseFitResponse,
-)
+) 
+
+logger = logging.getLogger(__name__)
 
 
 def parse_fit_bytes(payload: bytes) -> ParseFitResponse:
@@ -99,7 +103,16 @@ def _serialize_record(record: Record) -> DefinitionRecord | DataRecord:
 
 
 def _serialize_data_field(field: Field) -> DataField:
-    values = [value for value in field.get_values() if value is not None]
+    values: list[object] = []
+    dropped_non_finite = False
+    for value in field.get_values():
+        if value is None:
+            continue
+        if isinstance(value, float) and not math.isfinite(value):
+            dropped_non_finite = True
+            continue
+        values.append(value)
+
     if not values:
         data_value = None
     elif len(values) == 1:
@@ -108,6 +121,13 @@ def _serialize_data_field(field: Field) -> DataField:
         data_value = values
 
     units = field.units or None
+
+    if dropped_non_finite:
+        logger.warning(
+            "Omitted non-finite value(s) from field '%s' (id=%s) while serializing FIT data.",
+            field.name,
+            field.field_id,
+        )
 
     return DataField(
         field_id=field.field_id,
